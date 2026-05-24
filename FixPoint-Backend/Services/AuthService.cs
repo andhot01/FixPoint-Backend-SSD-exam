@@ -45,8 +45,8 @@ public class AuthService : IAuthService
                 .FirstOrDefault(t => t.Email == loginDto.Username);
             if (technician == null) return null;
 
-            var hashedPassword = HashPassword(loginDto.Password, technician.Salt);
-            if (hashedPassword != technician.Password) return null;
+            var isValidPassword = VerifyPassword(loginDto.Password, technician.Password);
+            if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, technician.Password)) return null;
 
             return GenerateJwtToken(technician.ID.ToString(), "Technician");
         }
@@ -82,14 +82,13 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string HashPassword(string password, string salt)
+    public string HashPassword(string password)
     {
-        using (var sha256 = System.Security.Cryptography.SHA256.Create())
-        {
-            var saltedPassword = password + salt;
-            var bytes = Encoding.UTF8.GetBytes(saltedPassword);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    public bool VerifyPassword(string password, string hashedPassword)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
     }
 }

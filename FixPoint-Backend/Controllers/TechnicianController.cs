@@ -25,16 +25,8 @@ public class TechnicianController : ControllerBase
     [HttpPost]
     public IActionResult AddTechnician([FromBody] TechnicianInputModel technicianInput)
     {
-        // Generate salt
-        byte[] salt = new byte[16];
-        using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider())
-        {
-            rng.GetBytes(salt);
-        }
-        string saltString = Convert.ToBase64String(salt);
-
         // Hash the password with the salt using AuthService
-        string hashedPassword = _authService.HashPassword(technicianInput.Password, saltString);
+        string hashedPassword = _authService.HashPassword(technicianInput.Password);
 
         // Create Technician object
         Technician technician = new Technician
@@ -42,11 +34,16 @@ public class TechnicianController : ControllerBase
             Name = technicianInput.Name,
             Email = technicianInput.Email,
             Password = hashedPassword,
-            Salt = saltString
+            Salt = null //field exists in db
         };
 
         _technicianService.AddTechnician(technician);
-        return Ok(technician);
+        return Ok(new
+        {
+            technician.ID,
+            technician.Name,
+            technician.Email
+        });
     }
 
     [HttpGet("[action]")]

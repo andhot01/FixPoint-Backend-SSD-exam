@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using FixPoint_Backend.Services;
 using FixPoint_Backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace FixPoint_Backend.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 

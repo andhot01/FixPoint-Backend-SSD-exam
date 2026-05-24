@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using FixPoint_Backend.Models;
 using FixPoint_Backend.Services.ServiceInterface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace FixPoint_Backend.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TechnicianController : ControllerBase
@@ -19,6 +21,7 @@ public class TechnicianController : ControllerBase
         _authService = authService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult AddTechnician([FromBody] TechnicianInputModel technicianInput)
     {

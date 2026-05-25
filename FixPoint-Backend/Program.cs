@@ -42,10 +42,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-        builder =>
+    options.AddPolicy("FrontendPolicy",
+        policy =>
         {
-            builder.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:3000")
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
@@ -88,7 +88,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors();
+app.UseCors("Frontend");
 
 app.MapControllers();
 

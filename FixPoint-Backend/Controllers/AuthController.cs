@@ -1,5 +1,6 @@
 ﻿using FixPoint_Backend.DataAccess;
 using FixPoint_Backend.Services.ServiceInterface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FixPoint_Backend.Controllers;
@@ -13,6 +14,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginDTO loginDto)
     {
